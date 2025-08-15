@@ -47,6 +47,9 @@ npm run build
 - **鉴权方式**: 选择认证方式
 - **API Key**: 根据鉴权方式填写相应的密钥
 
+<img width="1626" height="904" alt="设置页面" src="https://github.com/user-attachments/assets/6c4266eb-06d5-45ae-b5bc-ff27cdcc9ae9" />
+
+
 #### 可选配置
 - **默认作者 UID**: 文章作者ID
 - **默认分类**: 文章默认分类
@@ -72,6 +75,11 @@ npm run build
    - `发布当前笔记到 EMLOG` - 正式发布
    - `发布为草稿到 EMLOG` - 草稿发布
    - `自定义发布…` - 自定义发布选项
+
+<img width="504" height="1572" alt="侧边栏样式" src="https://github.com/user-attachments/assets/ca56fd47-4b0e-4d70-b328-7f089aefd01a" />
+
+<img width="1120" height="1342" alt="自定义发布" src="https://github.com/user-attachments/assets/51117d4b-c894-414c-8314-e35aa523b977" />
+
 
 3. **或使用右键菜单**：
    - 在文件浏览器中右键点击 Markdown 文件
