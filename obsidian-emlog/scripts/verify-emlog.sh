@@ -6,7 +6,7 @@ cd "$ROOT_DIR"
 
 if [[ -z "${EMLOG_BASE_URL:-}" || -z "${EMLOG_API_KEY:-}" ]]; then
   echo "[verify] 请设置环境变量 EMLOG_BASE_URL 与 EMLOG_API_KEY 再运行本脚本。"
-  echo "示例： EMLOG_BASE_URL=https://qimuai.cn EMLOG_API_KEY=xxxx npm run verify"
+  echo "示例： EMLOG_BASE_URL=https://yourdomain.com EMLOG_API_KEY=your_api_key npm run verify"
   exit 1
 fi
 

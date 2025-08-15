@@ -135,7 +135,7 @@
 - 一键快速验证四项 API（分类、微语、上传、发文/更新）
   - 在 `obsidian-emlog/` 目录执行：
     ```bash
-    EMLOG_BASE_URL=https://yourdomain EMLOG_API_KEY=your_api_key npm run verify
+    EMLOG_BASE_URL=https://yourdomain.com EMLOG_API_KEY=your_api_key npm run verify
     ```
   - 成功会打印“所有检查通过 ✅”。
 - 手工单项验证（可选）
