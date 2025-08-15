@@ -1,0 +1,22 @@
+/* optional styles for obsidian-emlog */
+.emlog-panel-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.emlog-panel-actions button {
+  padding: 6px 10px;
+}
+
+/* 发布弹窗基础样式 */
+.modal.mod-publish-emlog .setting-item-control textarea {
+  min-height: 80px;
+}
+.modal.mod-publish-emlog .setting-item-control input,
+.modal.mod-publish-emlog .setting-item-control textarea,
+.modal.mod-publish-emlog select {
+  width: 100%;
+}
+.modal.mod-publish-emlog .setting-item {
+  align-items: flex-start;
+}
