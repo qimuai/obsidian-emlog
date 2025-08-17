@@ -80,6 +80,9 @@ npm run build
 
 <img width="1120" height="1342" alt="自定义发布" src="https://github.com/user-attachments/assets/51117d4b-c894-414c-8314-e35aa523b977" />
 
+新增一些自定义选项
+<img width="1120" height="1342" alt="image" src="https://github.com/user-attachments/assets/8c7b398a-5e7f-41a2-bc2b-6d8e51fc5eaf" />
+
 
 3. **或使用右键菜单**：
    - 在文件浏览器中右键点击 Markdown 文件
