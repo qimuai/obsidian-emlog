@@ -131,4 +131,45 @@ async function postMultipart(endpoint: string, fd: FormData) {
     });
     expect(upd.code).toBe(0);
   });
+
+  it('article_post with new custom options should succeed', async () => {
+    const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const title = `[itest-custom] ${stamp}`;
+    const content = `# Hello Custom Options\n\nThis is an integration test with custom options ${stamp}`;
+
+    const post = await postForm('article_post', {
+      title,
+      content,
+      excerpt: 'integration test with custom options',
+      tags: 'it,emlog,custom',
+      draft: 'n',
+      allow_remark: 'n', // 不允许评论
+      auto_cover: 'n',
+      top: 'y', // 首页置顶
+      sortop: 'y', // 分类置顶
+      password: 'test123', // 访问密码
+    });
+    expect(post.code).toBe(0);
+    const id: number = post.data?.article_id;
+    expect(id).toBeTruthy();
+
+    // verify detail to check if options were applied
+    const [detailUrl] = makeUrls('article_detail', { id: String(id) });
+    const detail = await getJson(detailUrl);
+    expect(detail.code).toBe(0);
+
+    // update with different custom options
+    const newTitle = `${title} [updated with options]`;
+    const upd = await postForm('article_update', {
+      id: String(id),
+      title: newTitle,
+      excerpt: 'updated excerpt with custom options',
+      draft: 'n',
+      allow_remark: 'y', // 现在允许评论
+      top: 'n', // 取消首页置顶
+      sortop: 'n', // 取消分类置顶
+      password: '', // 移除访问密码
+    });
+    expect(upd.code).toBe(0);
+  });
 });

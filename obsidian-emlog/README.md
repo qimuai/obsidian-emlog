@@ -103,6 +103,10 @@ sort_id: 5
 draft: y
 author_uid: 1
 post_date: "2025-01-02 12:00:00"
+top: y                    # 首页置顶，是y，否n，默认否
+sortop: y                 # 分类置顶，是y，否n，默认否
+allow_remark: n           # 允许评论，是y，否n，默认是
+password: "123456"        # 访问密码，可选
 ---
 ```
 

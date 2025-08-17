@@ -47,6 +47,10 @@ type PublishOverrides = {
 	draft?: boolean;
 	postDate?: string;
 	coverImage?: string;
+	top?: string; // 首页置顶，是y，否n，默认否
+	sortop?: string; // 分类置顶，是y，否n，默认否
+	allowRemark?: string; // 允许评论，是y，否n，默认否
+	password?: string; // 访问密码
 };
 
 export default class ObsidianEmlogPlugin extends Plugin {
@@ -270,6 +274,11 @@ export default class ObsidianEmlogPlugin extends Plugin {
 		const postDate = overrides.postDate; // 允许自定义发布时间
 		const coverImage = overrides.coverImage ?? (fm.cover_image || fm.coverImage || ''); // 封面图
 		const draftFlag = asDraft ? true : (overrides.draft != null ? overrides.draft : (fm.draft === 'y' || fm.draft === true ? true : false));
+		// 处理新的发布选项
+		const top = overrides.top ?? (fm.top === 'y' || fm.top === true ? 'y' : 'n'); // 首页置顶
+		const sortop = overrides.sortop ?? (fm.sortop === 'y' || fm.sortop === true ? 'y' : 'n'); // 分类置顶
+		const allowRemarkOverride = overrides.allowRemark ?? (fm.allow_remark === 'n' || fm.allow_remark === false ? 'n' : 'y'); // 允许评论
+		const password = overrides.password ?? fm.password ?? ''; // 访问密码
 
 		this.setStatus('上传图片中...');
 		// 移除 frontmatter，只发布纯内容
@@ -309,6 +318,11 @@ export default class ObsidianEmlogPlugin extends Plugin {
 					draft: draftFlag ? 'y' : 'n',
 					...(postDate ? { post_date: postDate } : {}),
 					...(coverImage ? { cover: coverImage } : {}),
+					// 新增的发布选项
+					top: top,
+					sortop: sortop,
+					allow_remark: allowRemarkOverride,
+					...(password ? { password: password } : {}),
 				});
 				new Notice(`更新成功：${title} (ID: ${id})`);
 				this.setStatus('更新成功');
@@ -324,10 +338,14 @@ export default class ObsidianEmlogPlugin extends Plugin {
 					...(sortId ? { sort_id: sortId } : {}),
 					...(authorUid ? { author_uid: authorUid } : {}),
 					draft: draftFlag ? 'y' : 'n',
-					allow_remark: this.settings.allowRemark ? 'y' : 'n',
+					allow_remark: allowRemarkOverride,
 					auto_cover: this.settings.autoCover ? 'y' : 'n',
 					...(postDate ? { post_date: postDate } : {}),
 					...(coverImage ? { cover: coverImage } : {}),
+					// 新增的发布选项
+					top: top,
+					sortop: sortop,
+					...(password ? { password: password } : {}),
 				});
 				
 				// EMLOG API 返回格式：{"code":0,"msg":"ok","data":{"article_id":123}}
@@ -1004,6 +1022,10 @@ class PublishModal extends Modal {
 	private draft = false;
 	private postDate = '';
 	private coverImage = '';
+	private top = false; // 首页置顶
+	private sortop = false; // 分类置顶
+	private allowRemark = true; // 允许评论，默认允许
+	private password = ''; // 访问密码
 
 	constructor(app: App, plugin: ObsidianEmlogPlugin, file: TFile, editor?: Editor) {
 		super(app);
@@ -1026,6 +1048,11 @@ class PublishModal extends Modal {
 		this.sortId = (fm.sort_id ?? this.plugin.settings.defaultSortId) ? String(fm.sort_id ?? this.plugin.settings.defaultSortId) : '';
 		this.draft = fm.draft === 'y' || fm.draft === true || this.plugin.settings.defaultDraft;
 		this.coverImage = fm.cover_image || fm.coverImage || '';
+		// 初始化新的选项
+		this.top = fm.top === 'y' || fm.top === true || false;
+		this.sortop = fm.sortop === 'y' || fm.sortop === true || false;
+		this.allowRemark = fm.allow_remark !== 'n' && fm.allow_remark !== false; // 默认允许评论
+		this.password = fm.password || '';
 
 		new Setting(contentEl).setName('标题').addText(t => t.setValue(this.title).onChange(v => this.title = v));
 		new Setting(contentEl).setName('摘要').addTextArea(t => t.setValue(this.excerpt).onChange(v => this.excerpt = v));
@@ -1058,6 +1085,12 @@ class PublishModal extends Modal {
 
 		new Setting(contentEl).setName('草稿').addToggle(t => t.setValue(this.draft).onChange(v => this.draft = v));
 		new Setting(contentEl).setName('发布时间（可选）').setDesc('格式：YYYY-MM-DD HH:mm:ss').addText(t => t.setPlaceholder('2025-08-15 10:00:00').onChange(v => this.postDate = v));
+		
+		// 新增的发布选项
+		new Setting(contentEl).setName('首页置顶').setDesc('是否在首页置顶显示此文章').addToggle(t => t.setValue(this.top).onChange(v => this.top = v));
+		new Setting(contentEl).setName('分类置顶').setDesc('是否在分类页面置顶显示此文章').addToggle(t => t.setValue(this.sortop).onChange(v => this.sortop = v));
+		new Setting(contentEl).setName('允许评论').setDesc('是否允许读者对此文章进行评论').addToggle(t => t.setValue(this.allowRemark).onChange(v => this.allowRemark = v));
+		new Setting(contentEl).setName('访问密码').setDesc('设置文章访问密码（可选）').addText(t => t.setPlaceholder('留空表示无密码').setValue(this.password).onChange(v => this.password = v));
 
 		new Setting(contentEl).addButton(b => b.setCta().setButtonText('发布').onClick(async () => {
 			const raw2 = this.editor ? this.editor.getValue() : await this.app.vault.cachedRead(this.file);
@@ -1069,6 +1102,10 @@ class PublishModal extends Modal {
 				draft: this.draft,
 				postDate: this.postDate || undefined,
 				coverImage: this.coverImage || undefined,
+				top: this.top ? 'y' : 'n',
+				sortop: this.sortop ? 'y' : 'n',
+				allowRemark: this.allowRemark ? 'y' : 'n',
+				password: this.password || undefined,
 			});
 			this.close();
 		}));
